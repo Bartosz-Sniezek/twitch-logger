@@ -12,13 +12,15 @@ import Joi from 'joi';
         return envPath ?? undefined;
       })(),
       validationSchema: Joi.object({
-        PORT: Joi.number(),
-        NODE_ENV: Joi.string().valid(
-          Environment.DEVELOPMENT,
-          Environment.TEST,
-          Environment.PRODUCTION,
-        ),
-        DATABASE_URL: Joi.string(),
+        PORT: Joi.number().required(),
+        NODE_ENV: Joi.string()
+          .valid(
+            Environment.DEVELOPMENT,
+            Environment.TEST,
+            Environment.PRODUCTION,
+          )
+          .required(),
+        DATABASE_URL: Joi.string().required(),
       }),
       isGlobal: true,
     }),

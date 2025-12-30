@@ -9,8 +9,8 @@ export const twitchUserSchema = z.object({
     .enum(['', 'affiliate', 'partner'])
     .describe('Broadcaster type'),
   description: z.string().describe('User bio/description'),
-  profile_image_url: z.string().url().describe('Profile image URL'),
-  offline_image_url: z.string().url().describe('Offline image URL'),
+  profile_image_url: z.string().describe('Profile image URL'),
+  offline_image_url: z.string().describe('Offline image URL'),
   view_count: z
     .number()
     .int()

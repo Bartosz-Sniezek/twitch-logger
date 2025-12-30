@@ -11,16 +11,21 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - twitch_logger_dev_intra
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  cache:
+    image: redis:7.4-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass yourpassword
+    volumes:
+      - cache:/data
+
 volumes:
   postgres_data:
-
-networks:
-  twitch_logger_dev_intra:
+  cache:
+    driver: local

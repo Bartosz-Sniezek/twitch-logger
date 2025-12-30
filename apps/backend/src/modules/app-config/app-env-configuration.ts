@@ -7,6 +7,9 @@ const appConfigSchema = z.object({
   PORT: z.coerce.number(),
   NODE_ENV: z.enum(Environment),
   DATABASE_URL: z.string(),
+  TWITCH_API_CLIENT_ID: z.string(),
+  TWITCH_API_CLIENT_PASSWORD: z.string(),
+  REDIS_URL: z.string(),
 });
 
 export type AppEnvConfig = z.infer<typeof appConfigSchema>;

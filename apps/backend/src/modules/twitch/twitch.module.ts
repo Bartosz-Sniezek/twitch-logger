@@ -8,9 +8,15 @@ import { TwitchUsersApiClient } from './api/twitch-users-api.service';
 import { TwitchUsersController } from './controllers/twitch-users.controller';
 import { APP_PIPE } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { TwitchChannelEntity } from './twitch-channel.entity';
 
 @Module({
-  imports: [AppConfigModule, AppCacheModule],
+  imports: [
+    AppConfigModule,
+    AppCacheModule,
+    TypeOrmModule.forFeature([TwitchChannelEntity]),
+  ],
   providers: [
     TwitchApiTokenSevice,
     TwitchUsersApiService,

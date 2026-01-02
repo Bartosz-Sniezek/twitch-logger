@@ -5,6 +5,7 @@ import z from 'zod';
 
 const appConfigSchema = z.object({
   PORT: z.coerce.number(),
+  ALLOWED_ORIGINS: z.string(),
   NODE_ENV: z.enum(Environment),
   DATABASE_URL: z.string(),
   TWITCH_API_CLIENT_ID: z.string(),
@@ -32,5 +33,9 @@ export class AppConfig {
 
   get values(): AppEnvConfig {
     return { ...this._values };
+  }
+
+  get allowedOrigin(): string[] {
+    return this.values.ALLOWED_ORIGINS.split(';');
   }
 }

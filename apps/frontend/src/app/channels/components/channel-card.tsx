@@ -1,6 +1,5 @@
 "use client";
 
-import { TwitchUser } from "@/api/twitch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { TwitchUser } from "@twitch-logger/shared";
 import { BadgeCheckIcon } from "lucide-react";
 
 interface ChannelCardProps {

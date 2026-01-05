@@ -1,20 +1,7 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { TwitchUsersResponse } from "@twitch-logger/shared";
 
-export interface TwitchUser {
-  id: string;
-  login: string;
-  display_name: string;
-  profile_image_url: string;
-  description: string;
-  created_at: string;
-  broadcaster_type: string;
-}
-
-export interface SearchResult {
-  data: TwitchUser[];
-}
-
-async function searchAPI(username: string): Promise<SearchResult> {
+async function searchAPI(username: string): Promise<TwitchUsersResponse> {
   const response = await fetch(
     `http://localhost:8080/twitch/users?username=${encodeURIComponent(username)}`
   );
@@ -24,7 +11,7 @@ async function searchAPI(username: string): Promise<SearchResult> {
 
 export function useTwitchUserSearch(
   username: string
-): UseQueryResult<SearchResult, Error> {
+): UseQueryResult<TwitchUsersResponse, Error> {
   return useQuery({
     queryKey: ["twitch_user", username],
     queryFn: () => searchAPI(username),

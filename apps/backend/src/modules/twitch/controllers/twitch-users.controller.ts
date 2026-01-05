@@ -1,7 +1,10 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { TwitchUsersApiClient } from '../api/twitch-users-api.service';
 import { GetUsersParams } from './dtos/get-useres.params';
-import { TwitchGetUsersResponse } from '../interfaces/twitch-users-api.interface';
+import {
+  TwitchUsersResponse,
+  twitchUsersResponseSchema,
+} from '@twitch-logger/shared';
 
 @Controller('/twitch/users')
 export class TwitchUsersController {
@@ -10,7 +13,9 @@ export class TwitchUsersController {
   @Get()
   public async getUsers(
     @Query() query: GetUsersParams,
-  ): Promise<TwitchGetUsersResponse> {
-    return this.twitchUsersApiClient.getUsers(query.username);
+  ): Promise<TwitchUsersResponse> {
+    return this.twitchUsersApiClient
+      .getUsers(query.username)
+      .then((data) => twitchUsersResponseSchema.parse(data));
   }
 }

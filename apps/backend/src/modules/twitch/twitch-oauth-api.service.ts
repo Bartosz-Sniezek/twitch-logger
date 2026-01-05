@@ -24,7 +24,7 @@ export class TwitchOAuthApi {
       throw new Error(JSON.stringify(await resp.json()));
     }
 
-    const responseData = await resp.json();
+    const responseData: unknown = await resp.json();
     const parsed = twitchOAuthApiResponseSchema.safeParse(responseData);
 
     if (parsed.error) {

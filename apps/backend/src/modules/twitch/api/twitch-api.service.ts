@@ -13,7 +13,7 @@ export abstract class TwitchApiClient {
     });
 
     if (resp.status >= 300 && resp.status <= 499) {
-      const body = await resp.json();
+      const body: unknown = await resp.json();
 
       console.error(body);
 

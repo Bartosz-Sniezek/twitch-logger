@@ -12,7 +12,7 @@ export class TwitchApiTokenSevice {
   ) {}
 
   async getAppToken(): Promise<string> {
-    let token = await this.appCache.get<string>(this.TOKEN_KEY);
+    const token = await this.appCache.get<string>(this.TOKEN_KEY);
 
     if (token) return token;
 

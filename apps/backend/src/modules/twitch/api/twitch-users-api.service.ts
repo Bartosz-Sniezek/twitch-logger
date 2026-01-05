@@ -29,6 +29,6 @@ export class TwitchUsersApiClient extends TwitchApiClient {
       throw new Error('Failed to parse twix api response');
     }
 
-    return <TwitchGetUsersResponse>data;
+    return data;
   }
 }

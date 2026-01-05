@@ -10,7 +10,7 @@ import { AppCacheService } from './app-cache.service';
     CacheModule.registerAsync({
       imports: [AppConfigModule],
       inject: [AppConfig],
-      useFactory: async (config: AppConfig) => {
+      useFactory: (config: AppConfig) => {
         return {
           stores: [new KeyvRedis(config.values.REDIS_URL)],
         };

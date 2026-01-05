@@ -1,8 +1,8 @@
-import { SearchResult } from "@/api/twitch";
+import { TwitchUsersResponse } from "@twitch-logger/shared";
 import ChannelCard from "./channel-card";
 
 export interface SearchResultsProps {
-  results: SearchResult;
+  results: TwitchUsersResponse;
 }
 
 export function TwitchUserSearchResults({ results }: SearchResultsProps) {

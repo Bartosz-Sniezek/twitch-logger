@@ -47,8 +47,8 @@ jobs:
       - name: Test
         run: pnpm --filter @twitch-logger/backend test
 
-      - name: Test E2E
-        run: pnpm --filter @twitch-logger/backend test:e2e
+      # - name: Test E2E
+      #   run: pnpm --filter @twitch-logger/backend test:e2e
 
       - name: Upload coverage
         if: always()

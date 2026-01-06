@@ -5,4 +5,4 @@ import { UserChannelEntity } from './user-channel.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([UserChannelEntity])],
 })
-export class UsersChannelsModule {}
+export class UserTwitchChannelsModule {}

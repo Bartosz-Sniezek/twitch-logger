@@ -5,13 +5,13 @@ import { Repository } from 'typeorm';
 import { TwitchUserId, UserId } from 'src/types';
 
 @Injectable()
-export class UsersChannelFacade {
+export class UserTwitchChannelsFacade {
   constructor(
     @InjectRepository(UserChannelEntity)
     private readonly repository: Repository<UserChannelEntity>,
   ) {}
 
-  async save(userId: UserId, twitchUserId: TwitchUserId): Promise<void> {
+  async add(userId: UserId, twitchUserId: TwitchUserId): Promise<void> {
     await this.repository
       .createQueryBuilder()
       .insert()

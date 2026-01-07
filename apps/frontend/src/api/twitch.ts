@@ -1,5 +1,8 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { TwitchUsersResponse } from "@twitch-logger/shared";
+import {
+  AddUserTwitchChannelDto,
+  TwitchUsersResponse,
+} from "@twitch-logger/shared";
 
 async function searchAPI(username: string): Promise<TwitchUsersResponse> {
   const response = await fetch(
@@ -19,3 +22,13 @@ export function useTwitchUserSearch(
     staleTime: 5 * 60 * 1000,
   });
 }
+
+export const addChannelToUser = async (twitchUserId: string): Promise<void> => {
+  await fetch(`http://localhost:8080/users/me/twitch-channels`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(<AddUserTwitchChannelDto>{
+      twitchUserId,
+    }),
+  });
+};

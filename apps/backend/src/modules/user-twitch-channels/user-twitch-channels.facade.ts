@@ -21,6 +21,14 @@ export class UserTwitchChannelsFacade {
         twitchUserId,
       })
       .orIgnore()
-      .execute();
+      .execute()
+      .catch((error) => {
+        if ('code' in error && error.code === '23503')
+          throw new Error('Twitch channel not found in the app db');
+
+        console.error(error);
+
+        throw new Error('There was an error when adding twitch channel');
+      });
   }
 }

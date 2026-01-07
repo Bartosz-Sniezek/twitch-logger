@@ -1,5 +1,6 @@
 "use client";
 
+import { addChannelToUser } from "@/api/twitch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useMutation } from "@tanstack/react-query";
 import { TwitchUser } from "@twitch-logger/shared";
 import { BadgeCheckIcon } from "lucide-react";
 
@@ -18,6 +20,10 @@ interface ChannelCardProps {
 }
 
 export default function ChannelCard({ channel }: ChannelCardProps) {
+  const { isPending, mutate } = useMutation({
+    mutationFn: (twitchUserId: string) => addChannelToUser(twitchUserId),
+  });
+
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
@@ -42,7 +48,9 @@ export default function ChannelCard({ channel }: ChannelCardProps) {
       </CardHeader>
       <CardFooter>
         <CardAction>
-          <Button>Add</Button>
+          <Button disabled={isPending} onClick={() => mutate(channel.id)}>
+            Add
+          </Button>
         </CardAction>
       </CardFooter>
     </Card>

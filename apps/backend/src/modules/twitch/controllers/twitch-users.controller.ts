@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { TwitchUsersApiClient } from '../api/twitch-users-api.service';
+import { TwitchUsersApiClient } from '../api/twitch-users-api.client';
 import { GetUsersParams } from './dtos/get-useres.params';
 import {
   TwitchUsersResponse,

@@ -1,21 +1,21 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { TwitchUsersApiClient } from '../api/twitch-users-api.client';
 import { GetUsersParams } from './dtos/get-useres.params';
 import {
   TwitchUsersResponse,
   twitchUsersResponseSchema,
 } from '@twitch-logger/shared';
+import { TwitchUsersApiService } from '../twitch-users-api.sevice';
 
 @Controller('/twitch/users')
 export class TwitchUsersController {
-  constructor(private readonly twitchUsersApiClient: TwitchUsersApiClient) {}
+  constructor(private readonly twitchUsersApiService: TwitchUsersApiService) {}
 
   @Get()
   public async getUsers(
     @Query() query: GetUsersParams,
   ): Promise<TwitchUsersResponse> {
-    return this.twitchUsersApiClient
-      .getUsers(query.username)
-      .then((data) => twitchUsersResponseSchema.parse(data));
+    return this.twitchUsersApiService
+      .getChannelInfo(query.username)
+      .then((data) => twitchUsersResponseSchema.parse({ data: [data] }));
   }
 }

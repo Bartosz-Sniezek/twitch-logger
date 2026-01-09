@@ -15,9 +15,9 @@ export class TwitchUsersApiClient extends TwitchApiClient {
     super(appConfig, tokenService);
   }
 
-  async getUsers(username: string): Promise<TwitchGetUsersResponse> {
+  async getUsers(login: string): Promise<TwitchGetUsersResponse> {
     const url = new URL(this.BASE_URL);
-    url.searchParams.append('login', username);
+    url.searchParams.append('login', login);
 
     const responseData = await this.get(url);
     const { success, data, error } =

@@ -27,7 +27,7 @@ import { TwitchChannelEntity } from './twitch-channel.entity';
       useClass: ZodValidationPipe,
     },
   ],
-  exports: [TwitchUsersApiClient],
+  exports: [TwitchUsersApiClient, TwitchUsersApiService],
   controllers: [TwitchUsersController],
 })
 export class TwitchModule {}

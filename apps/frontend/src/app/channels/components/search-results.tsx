@@ -2,11 +2,11 @@ import { TwitchUsersResponse } from "@twitch-logger/shared";
 import ChannelCard from "./channel-card";
 
 export interface SearchResultsProps {
-  results: TwitchUsersResponse;
+  result: TwitchUsersResponse;
 }
 
-export function TwitchUserSearchResults({ results }: SearchResultsProps) {
-  if (results.data.length === 0) {
+export function TwitchUserSearchResults({ result }: SearchResultsProps) {
+  if (result.data === null) {
     return (
       <div className="p-4 text-sm text-muted-foreground">No results found</div>
     );
@@ -14,9 +14,11 @@ export function TwitchUserSearchResults({ results }: SearchResultsProps) {
 
   return (
     <div className="flex flex-row">
-      {results.data.map((result) => (
-        <ChannelCard key={result.id} channel={result} />
-      ))}
+      <ChannelCard
+        key={result.data.id}
+        channel={result.data}
+        isAdded={result.isAdded}
+      />
     </div>
   );
 }

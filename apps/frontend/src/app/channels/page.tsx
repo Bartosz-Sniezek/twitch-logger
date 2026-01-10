@@ -20,7 +20,7 @@ export default function Channels() {
       {isLoading && <p>Loading...</p>}
       {error && <p>Error</p>}
       {!isLoading && !error && data && (
-        <TwitchUserSearchResults results={data} />
+        <TwitchUserSearchResults result={data} />
       )}
     </div>
   );

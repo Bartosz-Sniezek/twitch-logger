@@ -1,5 +1,5 @@
 import { AppConfig } from '@modules/app-config/app-env-configuration';
-import { TwitchApiTokenSevice } from '../twitch-api-token.service';
+import { TwitchApiTokenSevice } from '../../services/twitch-api-token.service';
 
 export abstract class TwitchApiClient {
   constructor(
@@ -13,10 +13,6 @@ export abstract class TwitchApiClient {
     });
 
     if (resp.status >= 300 && resp.status <= 499) {
-      const body: unknown = await resp.json();
-
-      console.error(body);
-
       throw new Error('There was an error with ');
     } else if (resp.status > 500) {
       throw new Error('twix api unavailable 5xx');

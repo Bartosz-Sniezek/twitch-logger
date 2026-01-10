@@ -17,9 +17,10 @@ import { BadgeCheckIcon } from "lucide-react";
 
 interface ChannelCardProps {
   channel: TwitchUser;
+  isAdded: boolean;
 }
 
-export default function ChannelCard({ channel }: ChannelCardProps) {
+export default function ChannelCard({ channel, isAdded }: ChannelCardProps) {
   const { isPending, mutate } = useMutation({
     mutationFn: (twitchUserId: string) => addChannelToUser(twitchUserId),
   });
@@ -48,7 +49,10 @@ export default function ChannelCard({ channel }: ChannelCardProps) {
       </CardHeader>
       <CardFooter>
         <CardAction>
-          <Button disabled={isPending} onClick={() => mutate(channel.id)}>
+          <Button
+            disabled={isPending || isAdded}
+            onClick={() => mutate(channel.id)}
+          >
             Add
           </Button>
         </CardAction>

@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { TwitchApiClient } from './twitch-api.service';
+import { TwitchApiClient } from './abstract/twitch-api.client';
 import { AppConfig } from '@modules/app-config/app-env-configuration';
-import { TwitchApiTokenSevice } from '../twitch-api-token.service';
-import {
-  TwitchGetUsersResponse,
-  twitchGetUsersResponseSchema,
-} from '../interfaces/twitch-users-api.interface';
+import { TwitchApiGetUsersResponse } from './twitch-users.types';
+import { twitchApiGetUsersResponseSchema } from './twitch-users.schema';
+import { TwitchApiTokenSevice } from '../services/twitch-api-token.service';
 
 @Injectable()
 export class TwitchUsersApiClient extends TwitchApiClient {
@@ -15,13 +13,13 @@ export class TwitchUsersApiClient extends TwitchApiClient {
     super(appConfig, tokenService);
   }
 
-  async getUsers(login: string): Promise<TwitchGetUsersResponse> {
+  async getUsers(login: string): Promise<TwitchApiGetUsersResponse> {
     const url = new URL(this.BASE_URL);
     url.searchParams.append('login', login);
 
     const responseData = await this.get(url);
     const { success, data, error } =
-      twitchGetUsersResponseSchema.safeParse(responseData);
+      twitchApiGetUsersResponseSchema.safeParse(responseData);
 
     if (!success) {
       console.error(error);

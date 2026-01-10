@@ -10,6 +10,7 @@ export const twitchUserSchema = z.object({
   broadcaster_type: z.string(),
 });
 
-export const twitchUsersResponseSchema = z.object({
-  data: z.array(twitchUserSchema),
+export const twitchUserResponseSchema = z.object({
+  data: twitchUserSchema.nullable(),
+  isAdded: z.boolean(),
 });

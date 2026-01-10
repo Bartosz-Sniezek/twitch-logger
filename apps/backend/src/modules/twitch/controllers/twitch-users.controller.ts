@@ -2,20 +2,38 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { GetUsersParams } from './dtos/get-useres.params';
 import {
   TwitchUsersResponse,
-  twitchUsersResponseSchema,
+  twitchUserResponseSchema,
 } from '@twitch-logger/shared';
-import { TwitchUsersApiService } from '../twitch-users-api.sevice';
+import { TwitchUsersService } from '../twitch-users.sevice';
+import { TwitchUserId } from 'src/types';
 
 @Controller('/twitch/users')
 export class TwitchUsersController {
-  constructor(private readonly twitchUsersApiService: TwitchUsersApiService) {}
+  constructor(private readonly twitchUsersApiService: TwitchUsersService) {}
 
   @Get()
   public async getUsers(
     @Query() query: GetUsersParams,
   ): Promise<TwitchUsersResponse> {
-    return this.twitchUsersApiService
-      .getChannelInfo(query.username)
-      .then((data) => twitchUsersResponseSchema.parse({ data: [data] }));
+    const twitchUser = await this.twitchUsersApiService.getChannelInfo(
+      query.username,
+    );
+
+    if (twitchUser == null) {
+      return {
+        data: null,
+        isAdded: false,
+      };
+    }
+
+    const storedChannelInDatabase =
+      await this.twitchUsersApiService.getStoredChannelByUserId(
+        <TwitchUserId>twitchUser.id,
+      );
+
+    return twitchUserResponseSchema.parse(<TwitchUsersResponse>{
+      data: twitchUser,
+      isAdded: storedChannelInDatabase !== null,
+    });
   }
 }

@@ -5,7 +5,3 @@ export const twitchOAuthApiResponseSchema = z.object({
   expires_in: z.number(),
   token_type: z.string(),
 });
-
-export type TwitchOAuthApiResponse = z.infer<
-  typeof twitchOAuthApiResponseSchema
->;

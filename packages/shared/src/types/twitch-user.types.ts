@@ -1,8 +1,8 @@
 import z from "zod";
 import {
   twitchUserSchema,
-  twitchUsersResponseSchema,
+  twitchUserResponseSchema,
 } from "../schemas/twitch-user.schema";
 
 export type TwitchUser = z.infer<typeof twitchUserSchema>;
-export type TwitchUsersResponse = z.infer<typeof twitchUsersResponseSchema>;
+export type TwitchUsersResponse = z.infer<typeof twitchUserResponseSchema>;

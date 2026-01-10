@@ -1,6 +1,6 @@
 import z from 'zod';
 
-export const twitchUserSchema = z.object({
+export const twitchApiUserSchema = z.object({
   id: z.string().describe('User ID'),
   login: z.string().describe('User login name (lowercase)'),
   display_name: z.string().describe('User display name'),
@@ -25,11 +25,6 @@ export const twitchUserSchema = z.object({
     .describe('Date when user was created (RFC3339 format)'),
 });
 
-export const twitchGetUsersResponseSchema = z.object({
-  data: z.array(twitchUserSchema).describe('Array of user objects'),
+export const twitchApiGetUsersResponseSchema = z.object({
+  data: z.array(twitchApiUserSchema).describe('Array of user objects'),
 });
-
-export type TwitchUser = z.infer<typeof twitchUserSchema>;
-export type TwitchGetUsersResponse = z.infer<
-  typeof twitchGetUsersResponseSchema
->;

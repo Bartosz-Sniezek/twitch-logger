@@ -1,9 +1,7 @@
 import { AppConfig } from '@modules/app-config/app-env-configuration';
 import { Injectable } from '@nestjs/common';
-import {
-  TwitchOAuthApiResponse,
-  twitchOAuthApiResponseSchema,
-} from './interfaces/twitch-oauth-api.interface';
+import { TwitchOAuthApiResponse } from '../api/twitch-oauth.types';
+import { twitchOAuthApiResponseSchema } from '../api/twitch-oauth.schema';
 
 @Injectable()
 export class TwitchOAuthApi {

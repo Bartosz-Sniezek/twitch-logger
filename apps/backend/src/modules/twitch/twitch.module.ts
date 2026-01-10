@@ -7,7 +7,7 @@ import { ZodValidationPipe } from 'nestjs-zod';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TwitchChannelEntity } from './twitch-channel.entity';
 import { TwitchApiModule } from '@integration/twitch/twitch-api.module';
-import { TwitchUsersService } from './twitch-users.sevice';
+import { TwitchUsersService } from './twitch-users.service';
 
 @Module({
   imports: [

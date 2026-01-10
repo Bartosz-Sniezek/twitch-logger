@@ -4,7 +4,7 @@ import {
   TwitchUsersResponse,
   twitchUserResponseSchema,
 } from '@twitch-logger/shared';
-import { TwitchUsersService } from '../twitch-users.sevice';
+import { TwitchUsersService } from '../twitch-users.service';
 import { TwitchUserId } from 'src/types';
 
 @Controller('/twitch/users')

@@ -1,4 +1,4 @@
 import z from "zod";
-import { addUserTwitchChannelSchema } from "../schemas/add-user-twitch-channel";
+import { addTwitchChannelSchema } from "../schemas/add-twitch-channel";
 
-export type AddUserTwitchChannelDto = z.infer<typeof addUserTwitchChannelSchema>;
+export type AddUserTwitchChannelDto = z.infer<typeof addTwitchChannelSchema>;

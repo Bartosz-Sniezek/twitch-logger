@@ -1,3 +1,4 @@
+import QUERY_KEYS from "@/constants/query-keys";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import {
   AddUserTwitchChannelDto,
@@ -16,7 +17,7 @@ export function useTwitchUserSearch(
   username: string
 ): UseQueryResult<TwitchUsersResponse, Error> {
   return useQuery({
-    queryKey: ["twitch_user", username],
+    queryKey: [QUERY_KEYS.TWITCH_USERS, username],
     queryFn: () => searchAPI(username),
     enabled: username.trim().length >= 3,
     staleTime: 5 * 60 * 1000,
@@ -24,11 +25,17 @@ export function useTwitchUserSearch(
 }
 
 export const addChannelToUser = async (twitchUserId: string): Promise<void> => {
-  await fetch(`http://localhost:8080/users/me/twitch-channels`, {
+  await fetch(`http://localhost:8080/twitch/channels`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(<AddUserTwitchChannelDto>{
       twitchUserId,
     }),
+  });
+};
+
+export const removeChannel = async (twitchUserId: string): Promise<void> => {
+  await fetch(`http://localhost:8080/twitch/channels/${twitchUserId}`, {
+    method: "DELETE",
   });
 };

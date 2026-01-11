@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TwitchChannelEntity } from './twitch-channel.entity';
 import { TwitchApiModule } from '@integration/twitch/twitch-api.module';
 import { TwitchUsersService } from './twitch-users.service';
+import { TwitchChannelsController } from './controllers/twitch-channels.controller';
 
 @Module({
   imports: [
@@ -24,6 +25,6 @@ import { TwitchUsersService } from './twitch-users.service';
     },
   ],
   exports: [],
-  controllers: [TwitchUsersController],
+  controllers: [TwitchUsersController, TwitchChannelsController],
 })
 export class TwitchModule {}

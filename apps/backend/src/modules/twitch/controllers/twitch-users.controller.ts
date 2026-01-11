@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { GetUsersParams } from './dtos/get-useres.params';
+import { GetUsersParams } from '../dtos/get-user.params';
 import {
   TwitchUsersResponse,
   twitchUserResponseSchema,
@@ -15,7 +15,7 @@ export class TwitchUsersController {
   public async getUsers(
     @Query() query: GetUsersParams,
   ): Promise<TwitchUsersResponse> {
-    const twitchUser = await this.twitchUsersApiService.getChannelInfo(
+    const twitchUser = await this.twitchUsersApiService.getChannelByTwitchLogin(
       query.username,
     );
 

@@ -1,8 +1,6 @@
 "use client";
 
-import { addChannelToUser } from "@/api/twitch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
@@ -11,9 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useMutation } from "@tanstack/react-query";
 import { TwitchUser } from "@twitch-logger/shared";
 import { BadgeCheckIcon } from "lucide-react";
+import { RemoveButton } from "./remove-button";
+import { AddButton } from "./add-button";
 
 interface ChannelCardProps {
   channel: TwitchUser;
@@ -21,9 +20,13 @@ interface ChannelCardProps {
 }
 
 export default function ChannelCard({ channel, isAdded }: ChannelCardProps) {
-  const { isPending, mutate } = useMutation({
-    mutationFn: (twitchUserId: string) => addChannelToUser(twitchUserId),
-  });
+  let actionButton;
+
+  if (isAdded) {
+    actionButton = <RemoveButton channelId={channel.id} />;
+  } else {
+    actionButton = <AddButton channelId={channel.id} />;
+  }
 
   return (
     <Card className="w-full max-w-sm">
@@ -48,14 +51,7 @@ export default function ChannelCard({ channel, isAdded }: ChannelCardProps) {
         )}
       </CardHeader>
       <CardFooter>
-        <CardAction>
-          <Button
-            disabled={isPending || isAdded}
-            onClick={() => mutate(channel.id)}
-          >
-            Add
-          </Button>
-        </CardAction>
+        <CardAction>{actionButton}</CardAction>
       </CardFooter>
     </Card>
   );

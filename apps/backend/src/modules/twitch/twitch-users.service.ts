@@ -18,11 +18,17 @@ export class TwitchUsersService {
     private readonly repository: Repository<TwitchChannelEntity>,
   ) {}
 
-  async addChannel(userLogin: string): Promise<void> {
-    const channel = await this.getChannelInfo(userLogin);
+  async removeChannel(twitchUserId: TwitchUserId): Promise<void> {
+    await this.repository.delete({
+      twitchUserId,
+    });
+  }
+
+  async addChannel(twitchUserId: TwitchUserId): Promise<void> {
+    const channel = await this.getChannelByTwitchUserId(twitchUserId);
 
     if (channel === null)
-      throw new NotFoundException(`Twitch user not found: ${userLogin}`);
+      throw new NotFoundException(`Twitch user not found: ${twitchUserId}`);
 
     await this.repository
       .createQueryBuilder()
@@ -63,7 +69,9 @@ export class TwitchUsersService {
     });
   }
 
-  async getChannelInfo(userLogin: string): Promise<TwitchApiUser | null> {
+  async getChannelByTwitchLogin(
+    userLogin: string,
+  ): Promise<TwitchApiUser | null> {
     const key = 'TWITCH_USER__' + userLogin;
     const cachedChannel = await this.cacheService.get<TwitchApiUser>(key);
 
@@ -72,7 +80,30 @@ export class TwitchUsersService {
     }
 
     const channel = await this.twitchUsersApiClient
-      .getUsers(userLogin)
+      .getUserByLogin(userLogin)
+      .then((response) => response.data[0]);
+
+    if (channel == null) return null;
+
+    const oneWeekInMs = 7 * 24 * 60 * 60 * 1000;
+
+    await this.cacheService.set(key, channel, oneWeekInMs);
+
+    return channel;
+  }
+
+  async getChannelByTwitchUserId(
+    id: TwitchUserId,
+  ): Promise<TwitchApiUser | null> {
+    const key = 'TWITCH_USER_ID__' + id;
+    const cachedChannel = await this.cacheService.get<TwitchApiUser>(key);
+
+    if (cachedChannel) {
+      return cachedChannel;
+    }
+
+    const channel = await this.twitchUsersApiClient
+      .getUserById(id)
       .then((response) => response.data[0]);
 
     if (channel == null) return null;

@@ -1,5 +1,5 @@
 import z from "zod";
 
-export const addUserTwitchChannelSchema = z.object({
+export const addTwitchChannelSchema = z.object({
   twitchUserId: z.string(),
 });

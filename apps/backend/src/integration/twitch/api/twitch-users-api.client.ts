@@ -13,9 +13,26 @@ export class TwitchUsersApiClient extends TwitchApiClient {
     super(appConfig, tokenService);
   }
 
-  async getUsers(login: string): Promise<TwitchApiGetUsersResponse> {
+  async getUserByLogin(login: string): Promise<TwitchApiGetUsersResponse> {
     const url = new URL(this.BASE_URL);
     url.searchParams.append('login', login);
+
+    const responseData = await this.get(url);
+    const { success, data, error } =
+      twitchApiGetUsersResponseSchema.safeParse(responseData);
+
+    if (!success) {
+      console.error(error);
+
+      throw new Error('Failed to parse twix api response');
+    }
+
+    return data;
+  }
+
+  async getUserById(id: string): Promise<TwitchApiGetUsersResponse> {
+    const url = new URL(this.BASE_URL);
+    url.searchParams.append('id', id);
 
     const responseData = await this.get(url);
     const { success, data, error } =

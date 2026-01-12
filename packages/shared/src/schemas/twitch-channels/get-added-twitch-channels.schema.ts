@@ -16,12 +16,12 @@ const sortQuery = createSortSchema(TwitchChannelsSortBy);
 const twitchChannelLoginFilter = createArrayFilter("user_id");
 const createdAtDateRangeFilter = createDateRangeFilter("created_at");
 
-export const getTwitchChannelsQuerySchema = paginationQuerySchema
+export const getAddedTwitchChannelsQuerySchema = paginationQuerySchema
   .extend(sortQuery)
   .extend(twitchChannelLoginFilter)
   .extend(createdAtDateRangeFilter);
 
-const twitchChannelItemSchema = z.object({
+export const addedTwitchChannelItemSchema = z.object({
   twitchUserId: z.string(),
   login: z.string(),
   displayName: z.string(),
@@ -34,5 +34,5 @@ const twitchChannelItemSchema = z.object({
   createdAt: z.iso.datetime(),
 });
 
-export const getTwitchChannelsPaginatedResponseSchema =
-  createPaginatedResponseSchema(twitchChannelItemSchema);
+export const getAddedTwitchChannelsPaginatedResponseSchema =
+  createPaginatedResponseSchema(addedTwitchChannelItemSchema);

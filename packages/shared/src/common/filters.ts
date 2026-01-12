@@ -14,16 +14,16 @@ export const createArrayFilter = <T extends string>(field: T) => {
         z.ZodTransform<string[], string | string[]>
       >
     >
-  >);
+  >).shape;
 };
 
 export const createDateRangeFilter = <T extends string>(field: T) => {
   return z.object({
-    [`${field}_from`]: z.coerce.date().optional(),
-    [`${field}_to`]: z.coerce.date().optional(),
-  } as Record<`${T}_from` | `${T}_to`, z.ZodOptional<z.ZodDate>>);
+    [`${field}_from`]: z.iso.datetime().optional(),
+    [`${field}_to`]: z.iso.datetime().optional(),
+  } as Record<`${T}_from` | `${T}_to`, z.ZodOptional<z.ZodISODateTime>>).shape;
 };
 
 export const searchPhraseFilter = z.object({
   search_phrase: z.string().max(100).optional(),
-});
+}).shape;

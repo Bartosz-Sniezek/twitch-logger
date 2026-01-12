@@ -5,11 +5,11 @@ export enum SortOrder {
   DESC = "desc",
 }
 
-export const createSortSchema = (fields: readonly string[]) => {
-  return z
-    .object({
-      sort_by: z.enum(fields),
-      sort_order: z.enum(SortOrder).default(SortOrder.ASC),
-    })
-    .optional();
+export const createSortSchema = <T extends Record<string, string>>(
+  fields: T
+) => {
+  return z.object({
+    sort_by: z.enum(fields).optional(),
+    sort_order: z.enum(SortOrder).optional(),
+  }).shape;
 };

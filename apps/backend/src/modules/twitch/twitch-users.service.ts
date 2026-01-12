@@ -16,7 +16,7 @@ import { TwitchApiUser } from '@integration/twitch/api/twitch-users.types';
 import { TwitchUserId } from 'src/types';
 import { GetTwitchChannelsQueryDto } from './dtos/get-twitch-channels-query.dto';
 import {
-  GetTwitchChannelsPaginatedResponse,
+  GetAddedTwitchChannelsPaginatedResponse,
   TwitchChannelsSortBy,
 } from '@twitch-logger/shared';
 import { SortOrder } from '@twitch-logger/shared/common';
@@ -24,6 +24,12 @@ import { SortOrder } from '@twitch-logger/shared/common';
 @Injectable()
 export class TwitchUsersService {
   private readonly channelDbTTL = 60 * 60 * 1000;
+  private sortMap: Record<TwitchChannelsSortBy, string> = {
+    [TwitchChannelsSortBy.LOGIN]: 'login',
+    [TwitchChannelsSortBy.CREATED_AT]: 'created_at',
+    [TwitchChannelsSortBy.ACCOUNT_CREATED_AT]: 'channel_created_at',
+    [TwitchChannelsSortBy.DISPLAY_NAME]: 'display_name',
+  };
 
   constructor(
     private readonly cacheService: AppCacheService,
@@ -77,7 +83,7 @@ export class TwitchUsersService {
 
   async getChannels(
     query: GetTwitchChannelsQueryDto,
-  ): Promise<GetTwitchChannelsPaginatedResponse> {
+  ): Promise<GetAddedTwitchChannelsPaginatedResponse> {
     let pageSize = 10;
     let page = query.page ?? 0;
 
@@ -90,10 +96,28 @@ export class TwitchUsersService {
     }
 
     const skip = page * pageSize;
-    const whereConditions: FindOptionsWhere<TwitchChannelEntity> = {};
+
+    const qb = this.repository.createQueryBuilder('tc');
+
+    if (query.search_phrase) {
+      qb.andWhere(
+        '(LOWER(tc.login) LIKE LOWER(:search) OR LOWER(tc.display_name) LIKE LOWER(:search))',
+        {
+          search: `%${query.search_phrase}%`,
+        },
+      );
+    }
 
     if (query.user_id) {
-      whereConditions.twitchUserId = In(query.user_id);
+      qb.andWhere('tc.twitch_user_id = ANY(:userIds)', {
+        userIds: query.user_id,
+      });
+    }
+
+    if (query.broadcaster_type) {
+      qb.andWhere('tc.broadcaster_type = ANY(:broadcasterTypes)', {
+        broadcasterTypes: query.broadcaster_type,
+      });
     }
 
     const createdAtFrom = query.created_at_from
@@ -104,35 +128,51 @@ export class TwitchUsersService {
       : undefined;
 
     if (createdAtFrom && createdAtTo) {
-      whereConditions.createdAt = Between(createdAtFrom, createdAtTo);
+      qb.andWhere('tc.created_at BETWEEN :createdFrom AND :createdTo', {
+        createdFrom: createdAtFrom,
+        createdTo: createdAtTo,
+      });
     } else if (createdAtFrom) {
-      whereConditions.createdAt = MoreThanOrEqual(createdAtFrom);
+      qb.andWhere('tc.created_at >= :createdFrom', {
+        createdFrom: createdAtFrom,
+      });
     } else if (createdAtTo) {
-      whereConditions.createdAt = LessThanOrEqual(createdAtTo);
+      qb.andWhere('tc.created_at <= :createdTo', {
+        createdTo: createdAtTo,
+      });
     }
 
-    const order: FindOptionsOrder<TwitchChannelEntity> = {};
+    const accountCreatedAtFrom = query.account_created_at_from
+      ? new Date(query.account_created_at_from)
+      : undefined;
+    const accountCreatedAtTo = query.account_created_at_to
+      ? new Date(query.account_created_at_to)
+      : undefined;
+
+    if (accountCreatedAtFrom && accountCreatedAtTo) {
+      qb.andWhere('tc.channel_created_at BETWEEN :accountFrom AND :accountTo', {
+        accountFrom: accountCreatedAtFrom,
+        accountTo: accountCreatedAtTo,
+      });
+    } else if (accountCreatedAtFrom) {
+      qb.andWhere('tc.channel_created_at >= :accountFrom', {
+        accountFrom: accountCreatedAtFrom,
+      });
+    } else if (accountCreatedAtTo) {
+      qb.andWhere('tc.channel_created_at <= :accountTo', {
+        accountTo: accountCreatedAtTo,
+      });
+    }
 
     if (query.sort_by) {
       const sortOrder = query.sort_order === SortOrder.ASC ? 'ASC' : 'DESC';
-      switch (query.sort_by) {
-        case TwitchChannelsSortBy.CREATED_AT:
-          order['createdAt'] = sortOrder;
-          break;
-        case TwitchChannelsSortBy.LOGIN:
-          order['login'] = sortOrder;
-      }
-
-      console.log(query);
-      console.log(order);
+      qb.orderBy(`tc.${this.sortMap[query.sort_by]}`, sortOrder);
     }
 
-    const [channels, total] = await this.repository.findAndCount({
-      skip,
-      take: pageSize,
-      where: whereConditions,
-      order,
-    });
+    qb.skip(skip);
+    qb.take(pageSize);
+
+    const [channels, total] = await qb.getManyAndCount();
     const totalPages = Math.ceil(total / pageSize);
 
     return {

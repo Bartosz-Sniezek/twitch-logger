@@ -11,7 +11,7 @@ import { TwitchUsersService } from '../twitch-users.service';
 import type { TwitchUserId } from 'src/types';
 import { AddTwitchChannelDto } from '../dtos/add-twitch-channel.dto';
 import { GetTwitchChannelsQueryDto } from '../dtos/get-twitch-channels-query.dto';
-import { GetTwitchChannelsPaginatedResponse } from '@twitch-logger/shared';
+import { GetAddedTwitchChannelsPaginatedResponse } from '@twitch-logger/shared';
 
 @Controller('/twitch/channels')
 export class TwitchChannelsController {
@@ -32,7 +32,7 @@ export class TwitchChannelsController {
   @Get()
   public async getChannels(
     @Query() query: GetTwitchChannelsQueryDto,
-  ): Promise<GetTwitchChannelsPaginatedResponse> {
+  ): Promise<GetAddedTwitchChannelsPaginatedResponse> {
     return this.twitchUsersService.getChannels(query);
   }
 }

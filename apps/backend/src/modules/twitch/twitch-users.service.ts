@@ -2,10 +2,24 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { AppCacheService } from '@modules/cache/app-cache.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TwitchChannelEntity } from './twitch-channel.entity';
-import { Repository } from 'typeorm';
+import {
+  Between,
+  FindOptionsOrder,
+  FindOptionsWhere,
+  In,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 import { TwitchUsersApiClient } from '@integration/twitch/api/twitch-users-api.client';
 import { TwitchApiUser } from '@integration/twitch/api/twitch-users.types';
 import { TwitchUserId } from 'src/types';
+import { GetTwitchChannelsQueryDto } from './dtos/get-twitch-channels-query.dto';
+import {
+  GetTwitchChannelsPaginatedResponse,
+  TwitchChannelsSortBy,
+} from '@twitch-logger/shared';
+import { SortOrder } from '@twitch-logger/shared/common';
 
 @Injectable()
 export class TwitchUsersService {
@@ -59,6 +73,86 @@ export class TwitchUsersService {
         ['twitch_user_id'],
       )
       .execute();
+  }
+
+  async getChannels(
+    query: GetTwitchChannelsQueryDto,
+  ): Promise<GetTwitchChannelsPaginatedResponse> {
+    let pageSize = 10;
+    let page = query.page ?? 0;
+
+    if (query?.page_size && query.page_size > 0 && query.page_size <= 100) {
+      pageSize = query.page_size;
+    }
+
+    if (query?.page && query?.page > 0) {
+      page = query.page - 1;
+    }
+
+    const skip = page * pageSize;
+    const whereConditions: FindOptionsWhere<TwitchChannelEntity> = {};
+
+    if (query.user_id) {
+      whereConditions.twitchUserId = In(query.user_id);
+    }
+
+    const createdAtFrom = query.created_at_from
+      ? new Date(query.created_at_from)
+      : undefined;
+    const createdAtTo = query.created_at_to
+      ? new Date(query.created_at_to)
+      : undefined;
+
+    if (createdAtFrom && createdAtTo) {
+      whereConditions.createdAt = Between(createdAtFrom, createdAtTo);
+    } else if (createdAtFrom) {
+      whereConditions.createdAt = MoreThanOrEqual(createdAtFrom);
+    } else if (createdAtTo) {
+      whereConditions.createdAt = LessThanOrEqual(createdAtTo);
+    }
+
+    const order: FindOptionsOrder<TwitchChannelEntity> = {};
+
+    if (query.sort_by) {
+      const sortOrder = query.sort_order === SortOrder.ASC ? 'ASC' : 'DESC';
+      switch (query.sort_by) {
+        case TwitchChannelsSortBy.CREATED_AT:
+          order['createdAt'] = sortOrder;
+          break;
+        case TwitchChannelsSortBy.LOGIN:
+          order['login'] = sortOrder;
+      }
+
+      console.log(query);
+      console.log(order);
+    }
+
+    const [channels, total] = await this.repository.findAndCount({
+      skip,
+      take: pageSize,
+      where: whereConditions,
+      order,
+    });
+    const totalPages = Math.ceil(total / pageSize);
+
+    return {
+      page: page + 1,
+      pageSize,
+      totalItems: total,
+      totalPages,
+      data: channels.map((ch) => ({
+        twitchUserId: ch.twitchUserId,
+        login: ch.login,
+        displayName: ch.displayName,
+        description: ch.description,
+        broadcasterType: ch.broadcasterType,
+        userType: ch.userType,
+        profileImageUrl: ch.profileImageUrl,
+        offlineImageUrl: ch.offlineImageUrl,
+        channelCreatedAt: ch.channelCreatedAt.toISOString(),
+        createdAt: ch.createdAt.toISOString(),
+      })),
+    };
   }
 
   async getStoredChannelByUserId(

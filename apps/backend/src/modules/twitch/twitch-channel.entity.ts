@@ -4,7 +4,7 @@ import { Column, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 @Entity('twitch_channels')
 export class TwitchChannelEntity {
   @PrimaryColumn({ name: 'twitch_user_id', type: 'text' })
-  readonly twitchUserId: TwitchUserId;
+  twitchUserId: TwitchUserId;
 
   @Column({ name: 'login', type: 'text' })
   login: string;
@@ -34,7 +34,7 @@ export class TwitchChannelEntity {
   revalidateDataAfter: Date;
 
   @Column({ name: 'created_at', type: 'timestamp with time zone' })
-  readonly createdAt: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp with time zone' })
   updatedAt: Date;

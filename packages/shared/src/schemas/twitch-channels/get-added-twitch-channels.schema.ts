@@ -5,6 +5,7 @@ import {
   createPaginatedResponseSchema,
   createSortSchema,
   paginationQuerySchema,
+  searchPhraseFilter,
 } from "../../common";
 
 export enum TwitchChannelsSortBy {
@@ -16,12 +17,18 @@ export enum TwitchChannelsSortBy {
 
 const sortQuery = createSortSchema(TwitchChannelsSortBy);
 const twitchChannelLoginFilter = createArrayFilter("user_id");
+const twitchChannelBroadcasterTypeFilter =
+  createArrayFilter("broadcaster_type");
 const createdAtDateRangeFilter = createDateRangeFilter("created_at");
+const accountCreatedAtFilter = createDateRangeFilter("account_created_at");
 
 export const getAddedTwitchChannelsQuerySchema = paginationQuerySchema
   .extend(sortQuery)
   .extend(twitchChannelLoginFilter)
-  .extend(createdAtDateRangeFilter);
+  .extend(twitchChannelBroadcasterTypeFilter)
+  .extend(createdAtDateRangeFilter)
+  .extend(accountCreatedAtFilter)
+  .extend(searchPhraseFilter);
 
 export const addedTwitchChannelItemSchema = z.object({
   twitchUserId: z.string(),

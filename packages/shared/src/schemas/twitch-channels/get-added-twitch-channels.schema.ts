@@ -10,6 +10,8 @@ import {
 export enum TwitchChannelsSortBy {
   "LOGIN" = "login",
   "CREATED_AT" = "created_at",
+  "ACCOUNT_CREATED_AT" = "account_created_at",
+  "DISPLAY_NAME" = "display_name",
 }
 
 const sortQuery = createSortSchema(TwitchChannelsSortBy);

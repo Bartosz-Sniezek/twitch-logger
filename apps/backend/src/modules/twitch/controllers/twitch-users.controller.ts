@@ -1,21 +1,39 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { TwitchUsersApiClient } from '../api/twitch-users-api.service';
-import { GetUsersParams } from './dtos/get-useres.params';
+import { GetUsersParams } from '../dtos/get-user.params';
 import {
   TwitchUsersResponse,
-  twitchUsersResponseSchema,
+  twitchUserResponseSchema,
 } from '@twitch-logger/shared';
+import { TwitchUsersService } from '../twitch-users.service';
+import { TwitchUserId } from 'src/types';
 
 @Controller('/twitch/users')
 export class TwitchUsersController {
-  constructor(private readonly twitchUsersApiClient: TwitchUsersApiClient) {}
+  constructor(private readonly twitchUsersApiService: TwitchUsersService) {}
 
   @Get()
   public async getUsers(
     @Query() query: GetUsersParams,
   ): Promise<TwitchUsersResponse> {
-    return this.twitchUsersApiClient
-      .getUsers(query.username)
-      .then((data) => twitchUsersResponseSchema.parse(data));
+    const twitchUser = await this.twitchUsersApiService.getChannelByTwitchLogin(
+      query.username,
+    );
+
+    if (twitchUser == null) {
+      return {
+        data: null,
+        isAdded: false,
+      };
+    }
+
+    const storedChannelInDatabase =
+      await this.twitchUsersApiService.getStoredChannelByUserId(
+        <TwitchUserId>twitchUser.id,
+      );
+
+    return twitchUserResponseSchema.parse(<TwitchUsersResponse>{
+      data: twitchUser,
+      isAdded: storedChannelInDatabase !== null,
+    });
   }
 }

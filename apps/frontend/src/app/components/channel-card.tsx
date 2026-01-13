@@ -1,0 +1,58 @@
+"use client";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Card,
+  CardAction,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { TwitchUser } from "@twitch-logger/shared";
+import { BadgeCheckIcon } from "lucide-react";
+import { RemoveButton } from "./remove-button";
+import { AddButton } from "./add-button";
+
+interface ChannelCardProps {
+  channel: TwitchUser;
+  isAdded: boolean;
+}
+
+export default function ChannelCard({ channel, isAdded }: ChannelCardProps) {
+  let actionButton;
+
+  if (isAdded) {
+    actionButton = <RemoveButton channelId={channel.id} />;
+  } else {
+    actionButton = <AddButton channelId={channel.id} />;
+  }
+
+  return (
+    <Card className="w-full max-w-sm">
+      <CardHeader>
+        <CardTitle className="flex flex-col items-start gap-2">
+          <Avatar className="size-16 border-2 border-indigo-500">
+            <AvatarImage
+              src={channel.profile_image_url}
+              alt={channel.display_name + " avatar"}
+            />
+            <AvatarFallback>{channel.display_name[0]}</AvatarFallback>
+          </Avatar>
+          <div className="flex gap-1 item-center">
+            <span>{channel.display_name}</span>
+            {channel.broadcaster_type === "partner" && (
+              <BadgeCheckIcon className="text-indigo-500" size={18} />
+            )}
+          </div>
+        </CardTitle>
+        {channel.description !== "" && (
+          <CardDescription>{channel.description}</CardDescription>
+        )}
+      </CardHeader>
+      <CardFooter>
+        <CardAction>{actionButton}</CardAction>
+      </CardFooter>
+    </Card>
+  );
+}

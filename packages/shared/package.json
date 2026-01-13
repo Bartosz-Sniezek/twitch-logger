@@ -10,6 +10,11 @@
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
+    "./common": {
+      "import": "./dist/common/index.js",
+      "require": "./dist/common/index.js",
+      "types": "./dist/common/index.d.js"
+    },
     "./schemas": {
       "import": "./dist/schemas/index.js",
       "require": "./dist/schemas/index.js",

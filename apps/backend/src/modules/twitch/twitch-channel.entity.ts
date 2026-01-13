@@ -4,13 +4,22 @@ import { Column, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 @Entity('twitch_channels')
 export class TwitchChannelEntity {
   @PrimaryColumn({ name: 'twitch_user_id', type: 'text' })
-  readonly twitchUserId: TwitchUserId;
+  twitchUserId: TwitchUserId;
 
   @Column({ name: 'login', type: 'text' })
-  readonly login: string;
+  login: string;
 
   @Column({ name: 'display_name', type: 'text' })
-  readonly displayName: string;
+  displayName: string;
+
+  @Column({ name: 'description', type: 'text' })
+  description: string;
+
+  @Column({ name: 'user_type', type: 'text' })
+  userType: string;
+
+  @Column({ name: 'broadcaster_type', type: 'text' })
+  broadcasterType: string;
 
   @Column({ name: 'profile_image_url', type: 'text' })
   profileImageUrl: string;
@@ -19,10 +28,13 @@ export class TwitchChannelEntity {
   offlineImageUrl: string;
 
   @Column({ name: 'channel_created_at', type: 'timestamp with time zone' })
-  readonly channelCreatedAt: Date;
+  channelCreatedAt: Date;
+
+  @Column({ name: 'revalidate_data_after', type: 'timestamp with time zone' })
+  revalidateDataAfter: Date;
 
   @Column({ name: 'created_at', type: 'timestamp with time zone' })
-  readonly createdAt: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp with time zone' })
   updatedAt: Date;

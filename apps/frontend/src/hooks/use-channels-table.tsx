@@ -22,8 +22,6 @@ export interface ChannelsTableFilters {
 }
 
 export const useChannelsTable = () => {
-  const pageSizes = [10, 20, 50, 100];
-  const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [sortBy, setSortBy] = useState<TwitchChannelsSortBy | undefined>(

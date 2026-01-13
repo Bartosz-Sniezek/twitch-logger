@@ -9,6 +9,7 @@ import { TwitchChannelEntity } from './twitch-channel.entity';
 import { TwitchApiModule } from '@integration/twitch/twitch-api.module';
 import { TwitchUsersService } from './twitch-users.service';
 import { TwitchChannelsController } from './controllers/twitch-channels.controller';
+import { GetAddedTwitchChannelsQuery } from './get-added-twitch-channels.query';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { TwitchChannelsController } from './controllers/twitch-channels.controll
   ],
   providers: [
     TwitchUsersService,
+    GetAddedTwitchChannelsQuery,
     {
       provide: APP_PIPE,
       useClass: ZodValidationPipe,

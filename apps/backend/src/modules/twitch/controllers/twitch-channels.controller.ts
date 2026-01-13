@@ -12,10 +12,14 @@ import type { TwitchUserId } from 'src/types';
 import { AddTwitchChannelDto } from '../dtos/add-twitch-channel.dto';
 import { GetTwitchChannelsQueryDto } from '../dtos/get-twitch-channels-query.dto';
 import { GetAddedTwitchChannelsPaginatedResponse } from '@twitch-logger/shared';
+import { GetAddedTwitchChannelsQuery } from '../get-added-twitch-channels.query';
 
 @Controller('/twitch/channels')
 export class TwitchChannelsController {
-  constructor(private readonly twitchUsersService: TwitchUsersService) {}
+  constructor(
+    private readonly twitchUsersService: TwitchUsersService,
+    private readonly getAddedTwitchChannelsQuery: GetAddedTwitchChannelsQuery,
+  ) {}
 
   @Post()
   public async addChannel(@Body() dto: AddTwitchChannelDto): Promise<void> {
@@ -33,6 +37,6 @@ export class TwitchChannelsController {
   public async getChannels(
     @Query() query: GetTwitchChannelsQueryDto,
   ): Promise<GetAddedTwitchChannelsPaginatedResponse> {
-    return this.twitchUsersService.getChannels(query);
+    return this.getAddedTwitchChannelsQuery.execute(query);
   }
 }

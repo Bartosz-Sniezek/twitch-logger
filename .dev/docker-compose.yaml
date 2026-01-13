@@ -16,6 +16,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - backend_deps
 
   cache:
     image: redis:7.4-alpine
@@ -24,8 +26,13 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass yourpassword
     volumes:
       - cache:/data
+    networks:
+      - backend_deps
 
 volumes:
   postgres_data:
   cache:
     driver: local
+
+networks:
+  backend_deps:

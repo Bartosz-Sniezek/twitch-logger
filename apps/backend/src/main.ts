@@ -9,7 +9,7 @@ async function bootstrap() {
     origin: config.allowedOrigin,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   });
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(config.values.PORT);
 }
 bootstrap()
   .then()

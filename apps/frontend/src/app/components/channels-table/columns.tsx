@@ -145,7 +145,7 @@ export const createColumns = ({
       <Button
         variant="default"
         size="sm"
-        onClick={() => alert("in progress")}
+        onClick={() => alert("not implemented yet/in progress")}
         className="gap-2"
       >
         <Radio className="h-4 w-4" />

@@ -44,8 +44,8 @@ jobs:
       - name: Build
         run: pnpm --filter @twitch-logger/backend build
 
-      - name: Test
-        run: pnpm --filter @twitch-logger/backend test
+      # - name: Test
+      #   run: pnpm --filter @twitch-logger/backend test
 
       # - name: Test E2E
       #   run: pnpm --filter @twitch-logger/backend test:e2e

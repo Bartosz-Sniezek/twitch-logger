@@ -186,6 +186,42 @@ pnpm docker:backend:stop
 - The container uses `--network twitch_logger-infra_backend_deps` to access PostgreSQL and Redis on localhost. Make sure to set valid host values for PostgreSQL and Redis urls.
 - The container runs on port 8080
 
+## Running Frontend with Docker
+
+Instead of running the frontend locally, you can build and run it in a Docker container:
+
+### 1. Build the Docker Image
+
+```bash
+# From the root directory
+pnpm docker:frontend:build
+```
+
+This creates a multi-stage Docker image that:
+- Builds the frontend application
+- Creates a production-ready image with only runtime dependencies
+
+### 2. Run the Container
+
+**Foreground (with logs):**
+```bash
+pnpm docker:frontend:run
+```
+
+**Background (detached):**
+```bash
+pnpm docker:frontend:run:detached
+```
+
+**Stop the container:**
+```bash
+pnpm docker:frontend:stop
+```
+
+**Important Notes:**
+- Environment variables are loaded from `apps/frontend/.env`
+- The container runs on port 3000
+
 ## Available Scripts
 
 ### Root Level
@@ -199,6 +235,12 @@ pnpm docker:backend:stop
 - `pnpm docker:backend:run` - Run backend container (foreground)
 - `pnpm docker:backend:run:detached` - Run backend container (background)
 - `pnpm docker:backend:stop` - Stop and remove backend container
+
+**Frontend Docker:**
+- `pnpm docker:frontend:build` - Build frontend Docker image
+- `pnpm docker:frontend:run` - Run frontend container (foreground)
+- `pnpm docker:frontend:run:detached` - Run frontend container (background)
+- `pnpm docker:frontend:stop` - Stop and remove frontend container
 
 ### Backend (`apps/backend`)
 

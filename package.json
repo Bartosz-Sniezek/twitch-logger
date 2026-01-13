@@ -17,7 +17,11 @@
     "docker:backend:build": "docker build -t twitch-logger-backend:latest -f apps/backend/Dockerfile .",
     "docker:backend:run": "docker run -p 8080:8080 --network twitch_logger-infra_backend_deps --env-file apps/backend/.env twitch-logger-backend:latest",
     "docker:backend:run:detached": "docker run -d -p 8080:8080 --env-file apps/backend/.env --network twitch_logger-infra_backend_deps --name twitch-logger-backend twitch-logger-backend:latest",
-    "docker:backend:stop": "docker stop twitch-logger-backend && docker rm twitch-logger-backend"
+    "docker:backend:stop": "docker stop twitch-logger-backend && docker rm twitch-logger-backend",
+    "docker:frontend:build": "docker build -t twitch-logger-frontend:latest -f apps/frontend/Dockerfile .",
+    "docker:frontend:run": "docker run -p 3000:3000 --env-file apps/frontend/.env twitch-logger-frontend:latest",
+    "docker:frontend:run:detached": "docker run -d -p 3000:3000 --env-file apps/frontend/.env --name twitch-logger-frontend twitch-logger-frontend:latest",
+    "docker:frontend:stop": "docker stop twitch-logger-frontend && docker rm twitch-logger-frontend"
   },
   "keywords": [],
   "author": "",

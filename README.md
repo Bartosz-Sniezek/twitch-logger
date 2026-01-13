@@ -116,7 +116,7 @@ If your frontend needs to connect to the backend API:
 Create `apps/frontend/.env.local`:
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:8080
+NEXT_PUBLIC_API_URL=http://localhost:8080/api
 ```
 
 ### 7. Run Database Migrations
@@ -335,7 +335,7 @@ If you see validation errors on startup, ensure all required variables in the sc
 3. Click "Register Your Application"
 4. Fill in the required fields:
    - Name: Your app name
-   - OAuth Redirect URLs: `http://localhost:8080/auth/callback` (for development)
+   - OAuth Redirect URLs: `http://localhost:8080/api/auth/callback` (for development)
    - Category: Choose appropriate category
 5. Copy the **Client ID** and **Client Secret**
 6. Add them to your `.env.development` file

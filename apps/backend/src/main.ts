@@ -10,6 +10,7 @@ async function bootstrap() {
     origin: config.allowedOrigin,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   });
+  app.setGlobalPrefix('api');
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Twitch channels logger')

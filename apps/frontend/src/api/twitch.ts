@@ -12,7 +12,7 @@ import {
 
 async function searchAPI(username: string): Promise<TwitchUsersResponse> {
   const response = await fetch(
-    `http://localhost:8080/twitch/users?username=${encodeURIComponent(username)}`
+    `${process.env.NEXT_PUBLIC_API_URL}/twitch/users?username=${encodeURIComponent(username)}`
   );
   if (!response.ok) throw new Error("Search failed");
   return response.json();
@@ -30,7 +30,7 @@ export function useTwitchUserSearch(
 }
 
 export const addChannel = async (twitchUserId: string): Promise<void> => {
-  await fetch(`http://localhost:8080/twitch/channels`, {
+  await fetch(`${process.env.NEXT_PUBLIC_API_URL}/twitch/channels`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(<AddUserTwitchChannelDto>{
@@ -57,9 +57,12 @@ export const useAddChannel = () => {
 };
 
 export const removeChannel = async (twitchUserId: string): Promise<void> => {
-  await fetch(`http://localhost:8080/twitch/channels/${twitchUserId}`, {
-    method: "DELETE",
-  });
+  await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/twitch/channels/${twitchUserId}`,
+    {
+      method: "DELETE",
+    }
+  );
 };
 
 export const useRemoveChannel = () => {

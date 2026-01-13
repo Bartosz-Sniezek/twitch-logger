@@ -30,7 +30,7 @@ export const getAddedTwitchChannels = async (
     params.append("account_created_at_to", query.account_created_at_to);
 
   const response = await fetch(
-    "http://localhost:8080/twitch/channels?" + params.toString()
+    `${process.env.NEXT_PUBLIC_API_URL}/twitch/channels?` + params.toString()
   );
 
   if (!response.ok) throw new Error("Failed to fetch stored channels");

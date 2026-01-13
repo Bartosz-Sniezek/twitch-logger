@@ -147,12 +147,100 @@ cd apps/frontend
 pnpm dev
 ```
 
+## Running Backend with Docker
+
+Instead of running the backend locally, you can build and run it in a Docker container:
+
+### 1. Build the Docker Image
+
+```bash
+# From the root directory
+pnpm docker:backend:build
+```
+
+This creates a multi-stage Docker image that:
+- Builds the shared package
+- Builds the backend application
+- Creates a production-ready image with only runtime dependencies
+
+### 2. Run the Container
+
+**Foreground (with logs):**
+```bash
+pnpm docker:backend:run
+```
+
+**Background (detached):**
+```bash
+pnpm docker:backend:run:detached
+```
+
+**Stop the container:**
+```bash
+pnpm docker:backend:stop
+```
+
+**Important Notes:**
+- Environment variables are loaded from `apps/backend/.env`
+- Make sure PostgreSQL and Redis are running (`pnpm docker:deps:up`) before starting the backend container
+- The container uses `--network twitch_logger-infra_backend_deps` to access PostgreSQL and Redis on localhost. Make sure to set valid host values for PostgreSQL and Redis urls.
+- The container runs on port 8080
+
+## Running Frontend with Docker
+
+Instead of running the frontend locally, you can build and run it in a Docker container:
+
+### 1. Build the Docker Image
+
+```bash
+# From the root directory
+pnpm docker:frontend:build
+```
+
+This creates a multi-stage Docker image that:
+- Builds the frontend application
+- Creates a production-ready image with only runtime dependencies
+
+### 2. Run the Container
+
+**Foreground (with logs):**
+```bash
+pnpm docker:frontend:run
+```
+
+**Background (detached):**
+```bash
+pnpm docker:frontend:run:detached
+```
+
+**Stop the container:**
+```bash
+pnpm docker:frontend:stop
+```
+
+**Important Notes:**
+- Environment variables are loaded from `apps/frontend/.env`
+- The container runs on port 3000
+
 ## Available Scripts
 
 ### Root Level
 
+**Infrastructure:**
 - `pnpm docker:deps:up` - Start PostgreSQL and Redis containers
 - `pnpm docker:deps:down` - Stop PostgreSQL and Redis containers
+
+**Backend Docker:**
+- `pnpm docker:backend:build` - Build backend Docker image
+- `pnpm docker:backend:run` - Run backend container (foreground)
+- `pnpm docker:backend:run:detached` - Run backend container (background)
+- `pnpm docker:backend:stop` - Stop and remove backend container
+
+**Frontend Docker:**
+- `pnpm docker:frontend:build` - Build frontend Docker image
+- `pnpm docker:frontend:run` - Run frontend container (foreground)
+- `pnpm docker:frontend:run:detached` - Run frontend container (background)
+- `pnpm docker:frontend:stop` - Stop and remove frontend container
 
 ### Backend (`apps/backend`)
 

@@ -147,6 +147,14 @@ cd apps/frontend
 pnpm dev
 ```
 
+## API Documentation
+
+The backend provides interactive Swagger API documentation available at:
+
+```
+http://localhost:8080/api/docs
+```
+
 ## Running Backend with Docker
 
 Instead of running the backend locally, you can build and run it in a Docker container:

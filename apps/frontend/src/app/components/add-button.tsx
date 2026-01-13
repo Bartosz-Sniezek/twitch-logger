@@ -11,9 +11,12 @@ export const AddButton = ({ channelId: twitchUserId }: AddButtonProps) => {
   const queryClient = useQueryClient();
   const { isPending, mutate: addChannelCall } = useMutation({
     mutationFn: (twitchUserId: string) => addChannelToUser(twitchUserId),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
+    onSuccess: () => {
+      queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.TWITCH_USERS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_ADDED_CHANNELS],
       });
     },
   });

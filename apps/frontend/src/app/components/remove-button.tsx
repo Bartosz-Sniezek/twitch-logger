@@ -11,9 +11,12 @@ export const RemoveButton = ({ channelId }: RemoveButtonProps) => {
   const queryClient = useQueryClient();
   const { isPending, mutate: removeChannelCall } = useMutation({
     mutationFn: (twitchUserId: string) => removeChannel(twitchUserId),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
+    onSuccess: () => {
+      queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.TWITCH_USERS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_ADDED_CHANNELS],
       });
     },
   });

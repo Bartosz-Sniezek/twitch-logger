@@ -6,7 +6,7 @@ export interface RemoveButtonProps {
 }
 
 export const RemoveButton = ({ channelId }: RemoveButtonProps) => {
-  const { isPending, removeChannelCall } = useRemoveChannel();
+  const { isPending, removeChannelMutation: removeChannelCall } = useRemoveChannel();
   return (
     <Button disabled={isPending} onClick={() => removeChannelCall(channelId)}>
       Remove

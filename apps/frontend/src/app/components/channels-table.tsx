@@ -23,7 +23,7 @@ export const ChannelsTable = () => {
     setSearchQuery,
     handleSort,
   } = useChannelsTable();
-  const { removeChannelCall } = useRemoveChannel();
+  const { removeChannelMutation: removeChannelCall } = useRemoveChannel();
   const columns = createColumns({
     sortBy,
     sortOrder,

@@ -29,7 +29,7 @@ export function useTwitchUserSearch(
   });
 }
 
-export const addChannelToUser = async (twitchUserId: string): Promise<void> => {
+export const addChannel = async (twitchUserId: string): Promise<void> => {
   await fetch(`http://localhost:8080/twitch/channels`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -37,6 +37,23 @@ export const addChannelToUser = async (twitchUserId: string): Promise<void> => {
       twitchUserId,
     }),
   });
+};
+
+export const useAddChannel = () => {
+  const queryClient = useQueryClient();
+  const { isPending, mutate: addChannelMutation } = useMutation({
+    mutationFn: (twitchUserId: string) => addChannel(twitchUserId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.TWITCH_USERS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_ADDED_CHANNELS],
+      });
+    },
+  });
+
+  return { isPending, addChannelMutation };
 };
 
 export const removeChannel = async (twitchUserId: string): Promise<void> => {
@@ -47,7 +64,7 @@ export const removeChannel = async (twitchUserId: string): Promise<void> => {
 
 export const useRemoveChannel = () => {
   const queryClient = useQueryClient();
-  const { isPending, mutate: removeChannelCall } = useMutation({
+  const { isPending, mutate: removeChannelMutation } = useMutation({
     mutationFn: (twitchUserId: string) => removeChannel(twitchUserId),
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -59,5 +76,5 @@ export const useRemoveChannel = () => {
     },
   });
 
-  return { isPending, removeChannelCall };
+  return { isPending, removeChannelMutation };
 };

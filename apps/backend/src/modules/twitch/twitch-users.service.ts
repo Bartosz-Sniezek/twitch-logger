@@ -2,15 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { AppCacheService } from '@modules/cache/app-cache.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TwitchChannelEntity } from './twitch-channel.entity';
-import {
-  Between,
-  FindOptionsOrder,
-  FindOptionsWhere,
-  In,
-  LessThanOrEqual,
-  MoreThanOrEqual,
-  Repository,
-} from 'typeorm';
+import { Repository } from 'typeorm';
 import { TwitchUsersApiClient } from '@integration/twitch/api/twitch-users-api.client';
 import { TwitchApiUser } from '@integration/twitch/api/twitch-users.types';
 import { TwitchUserId } from 'src/types';

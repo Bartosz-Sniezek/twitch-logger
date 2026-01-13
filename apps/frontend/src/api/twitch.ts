@@ -1,5 +1,10 @@
 import QUERY_KEYS from "@/constants/query-keys";
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import {
   AddUserTwitchChannelDto,
   TwitchUsersResponse,
@@ -38,4 +43,21 @@ export const removeChannel = async (twitchUserId: string): Promise<void> => {
   await fetch(`http://localhost:8080/twitch/channels/${twitchUserId}`, {
     method: "DELETE",
   });
+};
+
+export const useRemoveChannel = () => {
+  const queryClient = useQueryClient();
+  const { isPending, mutate: removeChannelCall } = useMutation({
+    mutationFn: (twitchUserId: string) => removeChannel(twitchUserId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.TWITCH_USERS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_ADDED_CHANNELS],
+      });
+    },
+  });
+
+  return { isPending, removeChannelCall };
 };

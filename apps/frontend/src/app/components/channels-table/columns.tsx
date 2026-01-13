@@ -1,4 +1,16 @@
-import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   AddedTwitchChannelItem,
@@ -6,18 +18,20 @@ import {
 } from "@twitch-logger/shared";
 import { SortOrder } from "@twitch-logger/shared/common";
 import { format } from "date-fns";
-import { ArrowDown, ArrowUp, ArrowUpDown, Radio } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, Radio, Trash2 } from "lucide-react";
 
 interface CreateColumnsOptions {
   sortBy?: TwitchChannelsSortBy;
   sortOrder?: SortOrder;
   handleSort: (col: TwitchChannelsSortBy) => void;
+  handleDelete: (item: AddedTwitchChannelItem) => void;
 }
 
 export const createColumns = ({
   sortBy,
   sortOrder,
   handleSort,
+  handleDelete,
 }: CreateColumnsOptions): ColumnDef<AddedTwitchChannelItem>[] => [
   {
     accessorKey: "profileImageUrl",
@@ -142,15 +156,48 @@ export const createColumns = ({
     id: "actions",
     header: "Actions",
     cell: ({ row }) => (
-      <Button
-        variant="default"
-        size="sm"
-        onClick={() => alert("not implemented yet/in progress")}
-        className="gap-2"
-      >
-        <Radio className="h-4 w-4" />
-        Start Logging
-      </Button>
+      <div className="flex items-center gap-2">
+        <Button
+          variant="default"
+          size="sm"
+          onClick={() => alert("not implemented yet/in progress")}
+          className="gap-2"
+        >
+          <Radio className="h-4 w-4" />
+          Start Logging
+        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" size="sm" className="gap-2">
+              <Trash2 className="h-4 w-4" />
+              Delete
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently delete the channel{" "}
+                <span className="font-semibold">
+                  {row.original.displayName}
+                </span>{" "}
+                from your tracked channels. All collected logs will be
+                preserved, but you will stop collecting new logs from this
+                channel.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => handleDelete(row.original)}
+                className={buttonVariants({ variant: "destructive" })}
+              >
+                Delete Channel
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
     ),
   },
 ];

@@ -4,6 +4,7 @@ import { ChannelsTableFilters } from "./channels-table/channels-table-filters";
 import { useChannelsTable } from "@/hooks/use-channels-table";
 import { ChannelsTableContent } from "./channels-table/channels-table-content";
 import { ChannelsTablePagination } from "./channels-table/channels-table-pagination";
+import { useRemoveChannel } from "@/api/twitch";
 
 export const ChannelsTable = () => {
   const {
@@ -22,7 +23,13 @@ export const ChannelsTable = () => {
     setSearchQuery,
     handleSort,
   } = useChannelsTable();
-  const columns = createColumns({ sortBy, sortOrder, handleSort });
+  const { removeChannelCall } = useRemoveChannel();
+  const columns = createColumns({
+    sortBy,
+    sortOrder,
+    handleSort,
+    handleDelete: (item) => removeChannelCall(item.twitchUserId),
+  });
   const table = useReactTable({
     data: data?.data ?? [],
     columns,

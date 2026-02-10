@@ -39,6 +39,7 @@ export const addedTwitchChannelItemSchema = z.object({
   broadcasterType: z.string(),
   profileImageUrl: z.string(),
   offlineImageUrl: z.string(),
+  loggingEnabled: z.boolean(),
   channelCreatedAt: z.iso.datetime(),
   createdAt: z.iso.datetime(),
 });

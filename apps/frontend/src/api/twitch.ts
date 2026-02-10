@@ -12,14 +12,14 @@ import {
 
 async function searchAPI(username: string): Promise<TwitchUsersResponse> {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/twitch/users?username=${encodeURIComponent(username)}`
+    `${process.env.NEXT_PUBLIC_API_URL}/twitch/users?username=${encodeURIComponent(username)}`,
   );
   if (!response.ok) throw new Error("Search failed");
   return response.json();
 }
 
 export function useTwitchUserSearch(
-  username: string
+  username: string,
 ): UseQueryResult<TwitchUsersResponse, Error> {
   return useQuery({
     queryKey: [QUERY_KEYS.TWITCH_USERS, username],
@@ -61,7 +61,7 @@ export const removeChannel = async (twitchUserId: string): Promise<void> => {
     `${process.env.NEXT_PUBLIC_API_URL}/twitch/channels/${twitchUserId}`,
     {
       method: "DELETE",
-    }
+    },
   );
 };
 
@@ -80,4 +80,56 @@ export const useRemoveChannel = () => {
   });
 
   return { isPending, removeChannelMutation };
+};
+
+export const startTwitchChannelLogging = async (
+  twitchUserId: string,
+): Promise<void> => {
+  await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/twitch/channels/${twitchUserId}/start-logging`,
+    {
+      method: "POST",
+    },
+  );
+};
+
+export const useStartTwitchChannelLogging = () => {
+  const queryClient = useQueryClient();
+  const { isPending, mutate: startTwitchChannelLoggingMutation } = useMutation({
+    mutationFn: (twitchUserId: string) =>
+      startTwitchChannelLogging(twitchUserId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_ADDED_CHANNELS],
+      });
+    },
+  });
+
+  return { isPending, startTwitchChannelLoggingMutation };
+};
+
+export const stopTwitchChannelLogging = async (
+  twitchUserId: string,
+): Promise<void> => {
+  await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/twitch/channels/${twitchUserId}/stop-logging`,
+    {
+      method: "POST",
+    },
+  );
+};
+
+export const useStopTwitchChannelLogging = () => {
+  const queryClient = useQueryClient();
+  const { isPending, mutate: stopTwitchChannelLoggingMutation } = useMutation({
+    mutationFn: (twitchUserId: string) =>
+      stopTwitchChannelLogging(twitchUserId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_ADDED_CHANNELS],
+      });
+    },
+  });
+
+  return { isPending, stopTwitchChannelLoggingMutation };
 };

@@ -25,6 +25,8 @@ interface CreateColumnsOptions {
   sortOrder?: SortOrder;
   handleSort: (col: TwitchChannelsSortBy) => void;
   handleDelete: (item: AddedTwitchChannelItem) => void;
+  handleStartLogging: (userId: string) => void;
+  handleStopLogging: (userId: string) => void;
 }
 
 export const createColumns = ({
@@ -32,6 +34,8 @@ export const createColumns = ({
   sortOrder,
   handleSort,
   handleDelete,
+  handleStartLogging,
+  handleStopLogging,
 }: CreateColumnsOptions): ColumnDef<AddedTwitchChannelItem>[] => [
   {
     accessorKey: "profileImageUrl",
@@ -160,11 +164,15 @@ export const createColumns = ({
         <Button
           variant="default"
           size="sm"
-          onClick={() => alert("not implemented yet/in progress")}
+          onClick={() => {
+            if (row.original.loggingEnabled)
+              handleStopLogging(row.original.twitchUserId);
+            else handleStartLogging(row.original.twitchUserId);
+          }}
           className="gap-2"
         >
           <Radio className="h-4 w-4" />
-          Start Logging
+          {row.original.loggingEnabled ? "Stop Logging" : "Start Logging"}
         </Button>
         <AlertDialog>
           <AlertDialogTrigger asChild>

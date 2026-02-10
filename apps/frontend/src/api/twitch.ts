@@ -100,7 +100,8 @@ export const useRemoveChannel = () => {
         (old: AddedTwitchChannelItem[]) => {
           if (!old) return old;
           return old.filter(
-            (channel: any) => channel.twitchUserId !== twitchUserId,
+            (channel: AddedTwitchChannelItem) =>
+              channel.twitchUserId !== twitchUserId,
           );
         },
       );

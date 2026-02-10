@@ -11,6 +11,7 @@ const appConfigSchema = z.object({
   TWITCH_API_CLIENT_ID: z.string(),
   TWITCH_API_CLIENT_PASSWORD: z.string(),
   REDIS_URL: z.string(),
+  KAFKA_BROKER: z.string(),
 });
 
 export type AppEnvConfig = z.infer<typeof appConfigSchema>;

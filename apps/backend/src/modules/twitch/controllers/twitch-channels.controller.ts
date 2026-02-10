@@ -39,4 +39,14 @@ export class TwitchChannelsController {
   ): Promise<GetAddedTwitchChannelsPaginatedResponse> {
     return this.getAddedTwitchChannelsQuery.execute(query);
   }
+
+  @Post('/:twitchUserId/start-logging')
+  public async startLogging(@Param('twitchUserId') twitchUserId: TwitchUserId) {
+    await this.twitchUsersService.enableLogFor(twitchUserId);
+  }
+
+  @Post('/:twitchUserId/stop-logging')
+  public async stopLogging(@Param('twitchUserId') twitchUserId: TwitchUserId) {
+    await this.twitchUsersService.stopLogFor(twitchUserId);
+  }
 }

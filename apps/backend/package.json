@@ -25,12 +25,14 @@
     "migration:revert": "tsx ./node_modules/typeorm/cli.js migration:revert -d db/migrations-datasource.ts"
   },
   "dependencies": {
+    "@confluentinc/kafka-javascript": "^1.8.0",
     "@keyv/redis": "^5.1.5",
     "@nestjs/cache-manager": "^3.1.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/schedule": "^6.1.0",
     "@nestjs/swagger": "^11.2.4",
     "@nestjs/terminus": "^11.0.0",
     "@nestjs/typeorm": "^11.0.0",
@@ -45,6 +47,7 @@
     "tmi.js": "^1.8.5",
     "tsx": "^4.21.0",
     "typeorm": "^0.3.28",
+    "uuid": "^13.0.0",
     "zod": "catalog:default"
   },
   "devDependencies": {

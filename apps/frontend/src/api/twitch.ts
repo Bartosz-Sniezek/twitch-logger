@@ -9,14 +9,43 @@ import {
   AddUserTwitchChannelDto,
   TwitchUsersResponse,
 } from "@twitch-logger/shared";
+import { apiRequest } from "./helpers/api-request";
 
 async function searchAPI(username: string): Promise<TwitchUsersResponse> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/twitch/users?username=${encodeURIComponent(username)}`,
+  return apiRequest<TwitchUsersResponse>(
+    `/twitch/users?username=${encodeURIComponent(username)}`,
   );
-  if (!response.ok) throw new Error("Search failed");
-  return response.json();
 }
+
+export const addChannel = async (twitchUserId: string): Promise<void> => {
+  return apiRequest("/twitch/channels", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ twitchUserId } as AddUserTwitchChannelDto),
+  });
+};
+
+export const removeChannel = async (twitchUserId: string): Promise<void> => {
+  return apiRequest(`/twitch/channels/${twitchUserId}`, {
+    method: "DELETE",
+  });
+};
+
+export const startTwitchChannelLogging = async (
+  twitchUserId: string,
+): Promise<void> => {
+  return apiRequest(`/twitch/channels/${twitchUserId}/start-logging`, {
+    method: "POST",
+  });
+};
+
+export const stopTwitchChannelLogging = async (
+  twitchUserId: string,
+): Promise<void> => {
+  return apiRequest(`/twitch/channels/${twitchUserId}/stop-logging`, {
+    method: "POST",
+  });
+};
 
 export function useTwitchUserSearch(
   username: string,
@@ -29,20 +58,10 @@ export function useTwitchUserSearch(
   });
 }
 
-export const addChannel = async (twitchUserId: string): Promise<void> => {
-  await fetch(`${process.env.NEXT_PUBLIC_API_URL}/twitch/channels`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(<AddUserTwitchChannelDto>{
-      twitchUserId,
-    }),
-  });
-};
-
 export const useAddChannel = () => {
   const queryClient = useQueryClient();
-  const { isPending, mutate: addChannelMutation } = useMutation({
-    mutationFn: (twitchUserId: string) => addChannel(twitchUserId),
+  const mutation = useMutation({
+    mutationFn: addChannel,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.TWITCH_USERS],
@@ -53,23 +72,46 @@ export const useAddChannel = () => {
     },
   });
 
-  return { isPending, addChannelMutation };
-};
-
-export const removeChannel = async (twitchUserId: string): Promise<void> => {
-  await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/twitch/channels/${twitchUserId}`,
-    {
-      method: "DELETE",
-    },
-  );
+  return {
+    isPending: mutation.isPending,
+    isError: mutation.isError,
+    error: mutation.error,
+    addChannelMutation: mutation.mutate,
+    addChannelMutationAsync: mutation.mutateAsync,
+  };
 };
 
 export const useRemoveChannel = () => {
   const queryClient = useQueryClient();
-  const { isPending, mutate: removeChannelMutation } = useMutation({
-    mutationFn: (twitchUserId: string) => removeChannel(twitchUserId),
-    onSuccess: () => {
+  const mutation = useMutation({
+    mutationFn: removeChannel,
+    onMutate: async (twitchUserId) => {
+      await queryClient.cancelQueries({
+        queryKey: [QUERY_KEYS.GET_ADDED_CHANNELS],
+      });
+
+      const previousChannels = queryClient.getQueryData([
+        QUERY_KEYS.GET_ADDED_CHANNELS,
+      ]);
+
+      queryClient.setQueryData([QUERY_KEYS.GET_ADDED_CHANNELS], (old: any) => {
+        if (!old) return old;
+        return old.filter(
+          (channel: any) => channel.twitchUserId !== twitchUserId,
+        );
+      });
+
+      return { previousChannels };
+    },
+    onError: (_err, _twitchUserId, context) => {
+      if (context?.previousChannels) {
+        queryClient.setQueryData(
+          [QUERY_KEYS.GET_ADDED_CHANNELS],
+          context.previousChannels,
+        );
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.TWITCH_USERS],
       });
@@ -79,25 +121,19 @@ export const useRemoveChannel = () => {
     },
   });
 
-  return { isPending, removeChannelMutation };
-};
-
-export const startTwitchChannelLogging = async (
-  twitchUserId: string,
-): Promise<void> => {
-  await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/twitch/channels/${twitchUserId}/start-logging`,
-    {
-      method: "POST",
-    },
-  );
+  return {
+    isPending: mutation.isPending,
+    isError: mutation.isError,
+    error: mutation.error,
+    removeChannelMutation: mutation.mutate,
+    removeChannelMutationAsync: mutation.mutateAsync,
+  };
 };
 
 export const useStartTwitchChannelLogging = () => {
   const queryClient = useQueryClient();
-  const { isPending, mutate: startTwitchChannelLoggingMutation } = useMutation({
-    mutationFn: (twitchUserId: string) =>
-      startTwitchChannelLogging(twitchUserId),
+  const mutation = useMutation({
+    mutationFn: startTwitchChannelLogging,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_ADDED_CHANNELS],
@@ -105,25 +141,19 @@ export const useStartTwitchChannelLogging = () => {
     },
   });
 
-  return { isPending, startTwitchChannelLoggingMutation };
-};
-
-export const stopTwitchChannelLogging = async (
-  twitchUserId: string,
-): Promise<void> => {
-  await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/twitch/channels/${twitchUserId}/stop-logging`,
-    {
-      method: "POST",
-    },
-  );
+  return {
+    isPending: mutation.isPending,
+    isError: mutation.isError,
+    error: mutation.error,
+    startTwitchChannelLoggingMutation: mutation.mutate,
+    startTwitchChannelLoggingAsync: mutation.mutateAsync,
+  };
 };
 
 export const useStopTwitchChannelLogging = () => {
   const queryClient = useQueryClient();
-  const { isPending, mutate: stopTwitchChannelLoggingMutation } = useMutation({
-    mutationFn: (twitchUserId: string) =>
-      stopTwitchChannelLogging(twitchUserId),
+  const mutation = useMutation({
+    mutationFn: stopTwitchChannelLogging,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_ADDED_CHANNELS],
@@ -131,5 +161,11 @@ export const useStopTwitchChannelLogging = () => {
     },
   });
 
-  return { isPending, stopTwitchChannelLoggingMutation };
+  return {
+    isPending: mutation.isPending,
+    isError: mutation.isError,
+    error: mutation.error,
+    stopTwitchChannelLoggingMutation: mutation.mutate,
+    stopTwitchChannelLoggingAsync: mutation.mutateAsync,
+  };
 };

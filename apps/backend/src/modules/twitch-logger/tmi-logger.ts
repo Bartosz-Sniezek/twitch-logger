@@ -21,8 +21,17 @@ export class TmiLogger implements OnModuleInit, OnModuleDestroy {
   }
 
   async onModuleInit(): Promise<void> {
-    this.tmi.on('join', (channel, username, _self) => {
-      if (_self) return;
+    this.tmi.on('join', (channel, username, self) => {
+      if (self) {
+        void this.twitchKafkaProducer.sendMessage(
+          this.createSystemTwitchMessage({
+            channel,
+            type: 'self-join',
+          }),
+        );
+
+        return;
+      }
 
       void this.twitchKafkaProducer.sendMessage(
         this.createSystemTwitchMessage({
@@ -33,8 +42,17 @@ export class TmiLogger implements OnModuleInit, OnModuleDestroy {
       );
     });
 
-    this.tmi.on('part', (channel, username, _self) => {
-      if (_self) return;
+    this.tmi.on('part', (channel, username, self) => {
+      if (self) {
+        void this.twitchKafkaProducer.sendMessage(
+          this.createSystemTwitchMessage({
+            channel,
+            type: 'self-part',
+          }),
+        );
+
+        return;
+      }
 
       void this.twitchKafkaProducer.sendMessage(
         this.createSystemTwitchMessage({

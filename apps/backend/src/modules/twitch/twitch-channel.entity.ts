@@ -27,6 +27,9 @@ export class TwitchChannelEntity {
   @Column({ name: 'offline_image_url', type: 'text' })
   offlineImageUrl: string;
 
+  @Column({ name: 'logging_enabled', type: 'boolean' })
+  loggingEnabled: boolean;
+
   @Column({ name: 'channel_created_at', type: 'timestamp with time zone' })
   channelCreatedAt: Date;
 

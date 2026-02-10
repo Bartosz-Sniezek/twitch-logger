@@ -131,6 +131,7 @@ export class GetAddedTwitchChannelsQuery {
         userType: ch.userType,
         profileImageUrl: ch.profileImageUrl,
         offlineImageUrl: ch.offlineImageUrl,
+        loggingEnabled: ch.loggingEnabled,
         channelCreatedAt: ch.channelCreatedAt.toISOString(),
         createdAt: ch.createdAt.toISOString(),
       })),

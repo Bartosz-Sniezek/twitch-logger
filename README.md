@@ -4,7 +4,7 @@ A full-stack application for logging and tracking Twitch chat data, built with N
 
 ## Tech Stack
 
-- **Backend**: NestJS, TypeScript, TypeORM, PostgreSQL, Redis, tmi.js
+- **Backend**: NestJS, TypeScript, TypeORM, PostgreSQL, Redis, Kafka, tmi.js
 - **Frontend**: Next.js 16, React 19, TypeScript, Tailwind CSS, TanStack Query
 - **Shared**: Common types and utilities (workspace package)
 - **Package Manager**: pnpm (workspace monorepo)
@@ -53,7 +53,7 @@ pnpm install
 
 ### 4. Start Backend Dependencies
 
-The backend requires PostgreSQL and Redis. These are managed via Docker Compose in the `.dev/` directory:
+The backend requires PostgreSQL, Redis and Kafka. These are managed via Docker Compose in the `.dev/` directory:
 
 ```bash
 # Start PostgreSQL and Redis containers
@@ -64,12 +64,14 @@ pnpm docker:deps:down
 ```
 
 **Services started:**
-- **PostgreSQL 16.1** - Available at `localhost:5432`
+- **PostgreSQL 18.1** - Available at `localhost:5432`
   - Database: `twitch_logger_dev`
   - User: `postgres`
   - Password: `postgres`
 - **Redis 7.4** - Available at `localhost:6379`
   - Password: `yourpassword`
+
+- **Kafka 4.1.1** - Available at `localhost:9094`
 
 ### 5. Configure Backend Environment Variables
 
@@ -96,6 +98,9 @@ REDIS_URL=redis://default:yourpassword@localhost:6379
 # Twitch API credentials (get from https://dev.twitch.tv/console)
 TWITCH_API_CLIENT_ID=your_client_id_here
 TWITCH_API_CLIENT_PASSWORD=your_client_secret_here
+
+# Kafka broker
+KAFKA_BROKER=localhost:9094
 ```
 
 **Required environment variables** (validated by Zod schema):
@@ -106,6 +111,7 @@ TWITCH_API_CLIENT_PASSWORD=your_client_secret_here
 - `REDIS_URL` - Redis connection string
 - `TWITCH_API_CLIENT_ID` - Twitch API client ID
 - `TWITCH_API_CLIENT_PASSWORD` - Twitch API client secret
+- `KAFKA_BROKER` - Kafka broker url
 
 **Note**: A sample `.env.example` file already exists in `apps/backend/` with example values. You'll need to update the Twitch API credentials with your own from the [Twitch Developer Console](https://dev.twitch.tv/console).
 
@@ -321,6 +327,7 @@ The application automatically loads the correct `.env` file based on `NODE_ENV`:
 Default ports used:
 - `5432` - PostgreSQL
 - `6379` - Redis
+- `9094` - Kafka
 - `8080` - Backend API
 - `3000` - Frontend
 

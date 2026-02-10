@@ -24,7 +24,9 @@
     "paths": {
       "@utils/*": ["./src/utils/*"],
       "@modules/*": ["./src/modules/*"],
-      "@integration/*": ["./src/integration/*"]
+      "@integration/*": ["./src/integration/*"],
+      "@config/*": ["./src/config/*"],
+      "@models/*": ["./src/models/*"]
     }
   }
 }

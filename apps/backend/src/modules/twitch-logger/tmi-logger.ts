@@ -187,14 +187,14 @@ export class TmiLogger implements OnModuleInit, OnModuleDestroy {
 
   async joinChannel(channel: string): Promise<void> {
     await this.waitForConnection();
-    if (this.tmi.getChannels().includes(channel)) return;
+    if (this.tmi.getChannels().includes(`#${channel}`)) return;
 
     await this.tmi.join(channel);
   }
 
   async leaveChannel(channel: string): Promise<void> {
     await this.waitForConnection();
-    if (!this.tmi.getChannels().includes(channel)) return;
+    if (!this.tmi.getChannels().includes(`#${channel}`)) return;
 
     await this.tmi.part(channel);
   }

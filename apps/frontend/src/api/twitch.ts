@@ -6,6 +6,7 @@ import {
   UseQueryResult,
 } from "@tanstack/react-query";
 import {
+  AddedTwitchChannelItem,
   AddUserTwitchChannelDto,
   TwitchUsersResponse,
 } from "@twitch-logger/shared";
@@ -94,12 +95,15 @@ export const useRemoveChannel = () => {
         QUERY_KEYS.GET_ADDED_CHANNELS,
       ]);
 
-      queryClient.setQueryData([QUERY_KEYS.GET_ADDED_CHANNELS], (old: any) => {
-        if (!old) return old;
-        return old.filter(
-          (channel: any) => channel.twitchUserId !== twitchUserId,
-        );
-      });
+      queryClient.setQueryData(
+        [QUERY_KEYS.GET_ADDED_CHANNELS],
+        (old: AddedTwitchChannelItem[]) => {
+          if (!old) return old;
+          return old.filter(
+            (channel: any) => channel.twitchUserId !== twitchUserId,
+          );
+        },
+      );
 
       return { previousChannels };
     },
